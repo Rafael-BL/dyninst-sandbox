@@ -1,24 +1,18 @@
 #include <stdio.h>
 #include <unistd.h>
-
-void print(int a, short b, char *c, char d)
+void print(int a, short b, char *c, char d, int *e)
 {
-	printf("%d, %d, %s, %c\n",a ,b ,c ,d);
+	printf("%d, %d, %s, %c, %d\n",a ,b ,c ,d, *e);
 }
 
 
 int main()
 {
-	int i;
-	setbuf(stdout, NULL);
-	printf("looping");
-	for(i = 0; i < 3; i++)
+	int i, var = 18;
+	for(i = 0; i < 5; ++i)
 	{
-		printf(".");
+		print(1337, 86, "Hello World", 'c',&var );
 		sleep(2);
 	}
-	printf(" Done!\n");
-	print(1337, 86, "Hello World", 'c');
-	for(;;){}
 	return 0;
 }

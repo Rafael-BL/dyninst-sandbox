@@ -4,4 +4,4 @@ all: inspector
 inspector: inspector.cpp
 	g++ $(CFLAGS) inspector.cpp -lsymtabAPI -ldyninstAPI -o inspector
 clean:
-	rm suspect suspect.o my-lib.o inspector
+	rm -f inspector

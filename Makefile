@@ -5,4 +5,5 @@ all: suspect
 suspect: suspect.c 
 	gcc $(CFLAGS) suspect.c -o suspect
 clean:
-	rm suspect
+	rm -f  suspect
+	cd symtabAPI && make clean && cd ..
