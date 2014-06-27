@@ -6,10 +6,12 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-int main (int argc, const char* argv[]) {
-    BPatch bpatch;
-    //BPatch_process *proc = bpatch.processCreate(argv[2], argv + 2);
 
+#define DYNSO_PATH "./dyn.so"
+int main (int argc, const char* argv[]) {
+		BPatch bpatch;
+	//BPatch_process *proc = bpatch.processCreate(argv[2], argv + 2);
+	int type = atoi(argv[1]);
 	int mutateePid = fork();
 
 	if(mutateePid == 0)
@@ -21,7 +23,7 @@ int main (int argc, const char* argv[]) {
 	}
 
 	sleep(2);
-   	BPatch_process *proc = bpatch.processAttach(NULL, mutateePid);
+	BPatch_process *proc = bpatch.processAttach(NULL, mutateePid);
 
 	if (proc == NULL)
 	{
@@ -31,30 +33,65 @@ int main (int argc, const char* argv[]) {
 		wait(&status);
 		return 0;
 	}
-	bpatch.setTrampRecursive(true);
-    bpatch.setSaveFPR(false);
 
-    BPatch_object *ipa = proc->loadLibrary(argv[1]);
-    BPatch_image *image = proc->getImage();
+	BPatch_image *image = proc->getImage();
+	std::vector<BPatch_point *> *points;
+	std::vector<BPatch_function *> print_fcts, tp_fcts, answer_fcts;
 
-    std::vector<BPatch_function *> foo_fns, ipa_fns;
-    image->findFunction("print", foo_fns);
-    image->findFunction("tp", ipa_fns);
+	switch(type)
+	{
+		case 1:
+		{
+		    /* Adding function call to a shared object */
+		    BPatch_object *api = proc->loadLibrary(DYNSO_PATH);
 
-    std::vector<BPatch_snippet*> args;
-    BPatch_funcCallExpr call_ipa(*ipa_fns[0], args);
-	BPatchSnippetHandle* snippetHandle =
-			 proc->insertSnippet(call_ipa,
-					(foo_fns[0]->findPoint(BPatch_entry))[0]);
+		    image->findFunction("print", print_fcts);
+		    image->findFunction("tp", tp_fcts);
 
-    proc->continueExecution();
-	sleep(2);
-	
-	proc->deleteSnippet(snippetHandle);
-    while (!proc->isTerminated()) {
-      bpatch.waitForStatusChange();
-    }
+		    std::vector<BPatch_snippet*> args;
+		    BPatch_funcCallExpr call_tp(*tp_fcts[0], args);
 
+			points = print_fcts[0]->findPoint(BPatch_entry);
+			BPatchSnippetHandle* snippetHandle =
+						proc->insertSnippet(call_tp, points[0] );
+			proc->continueExecution();
+			sleep(2);
+
+			proc->deleteSnippet(snippetHandle);
+			break;
+		}
+		case 2:
+		{
+			//
+			image->findFunction("getAnswer", answer_fcts);
+			points = answer_fcts[0]->findPoint(BPatch_entry);
+			BPatch_variableExpr *intCounter =
+						proc->malloc(*(image->findType("int")));
+			BPatch_arithExpr addOne(BPatch_assign, *intCounter,
+							BPatch_arithExpr(BPatch_plus, *intCounter,
+							BPatch_constExpr(1)));
+
+			BPatchSnippetHandle* snippetHandle =
+							proc->insertSnippet(addOne, points[0]);
+
+			proc->continueExecution();
+			sleep(2);
+			int a = 0;
+			proc->stopExecution();
+			intCounter->readValue(&a);
+			proc->continueExecution();
+			std::cout<<"getAnswer call counter: "<<a<<std::endl;
+			proc->deleteSnippet(snippetHandle);
+		}
+			break;
+		default:
+			break;
+
+	}
+
+	while (!proc->isTerminated()) {
+		bpatch.waitForStatusChange();
+	}
 	proc->detach(true);
-    return 0;
+	return 0;
 }
