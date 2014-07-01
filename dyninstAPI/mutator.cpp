@@ -220,6 +220,8 @@ int main (int argc, const char* argv[]) {
 						break;
 					}
 				}
+				//Push name of the parameter
+				args.push_back(new BPatch_constExpr((*params)[i]->getName()));
 				//Push the next argument
 				args.push_back(new BPatch_paramExpr(i));
 			}

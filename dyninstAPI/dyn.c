@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include "argtype.h"
 static int a = 0;
@@ -15,10 +16,13 @@ void tpvarargs(int arg1, ...)
 	printf("We received %d parameters\n", arg1);
 	va_start(ap, arg1);
 	int type;
+	char *name;
+	name = malloc(512);
 	for(i = 0; i < arg1; ++i)
 	{
 		type = va_arg (ap,int); // get next argument
-		printf("Arg%d of type ",i);
+		name = va_arg (ap,char *); // get next argument
+		printf("Arg%d named %s of type ",i,name);
 		switch(type)
 		{
 			case INT:
