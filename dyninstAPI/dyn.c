@@ -20,8 +20,8 @@ void tpvarargs(int arg1, ...)
 	name = malloc(512);
 	for(i = 0; i < arg1; ++i)
 	{
-		type = va_arg (ap,int); // get next argument
-		name = va_arg (ap,char *); // get next argument
+		type = va_arg (ap,int); // get next argument type
+		name = va_arg (ap,char *); // get next argument name
 		printf("Arg%d named %s of type ",i,name);
 		switch(type)
 		{
@@ -64,4 +64,25 @@ void tpvarargs(int arg1, ...)
 		}
 	}
 	va_end(ap);
+	free(name);
+}
+
+void tp_print_param_int(char *name ,int value)
+{
+	printf("int %s = %d;\n", name, value);
+}
+
+void tp_print_param_char(char *name ,char value)
+{
+	printf("char %s = \'%c\';\n", name, value);
+}
+
+void tp_print_param_char_ptr(char *name ,char *value)
+{
+	printf("char *%s = \"%s\";\n", name, value);
+}
+
+void tp_print_param_void_ptr(char *name ,void *value)
+{
+	printf("void *%s = %p;\n", name, value);
 }

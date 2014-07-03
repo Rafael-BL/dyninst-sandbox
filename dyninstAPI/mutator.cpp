@@ -37,7 +37,7 @@ int main (int argc, const char* argv[]) {
 	}
 
 	BPatch_image *image = proc->getImage();
-	std::vector<BPatch_point *> *points;
+	vector<BPatch_point *> *points;
 
 	switch(type)
 	{
@@ -45,11 +45,11 @@ int main (int argc, const char* argv[]) {
 		{
 		    /* Adding function call to a shared object */
 		    proc->loadLibrary(DYNSO_PATH);
-			std::vector<BPatch_function *> print_fcts, tp_fcts;
+			vector<BPatch_function *> print_fcts, tp_fcts;
 		    image->findFunction("print", print_fcts);
 		    image->findFunction("tp", tp_fcts);
 
-		    std::vector<BPatch_snippet*> args;
+		    vector<BPatch_snippet*> args;
 		    BPatch_funcCallExpr call_tp(*tp_fcts[0], args);
 
 			points = print_fcts[0]->findPoint(BPatch_entry);
@@ -64,7 +64,7 @@ int main (int argc, const char* argv[]) {
 		case 2:
 		{
 			//
-			std::vector<BPatch_function *> answer_fcts;
+			vector<BPatch_function *> answer_fcts;
 			image->findFunction("getAnswer", answer_fcts);
 			points = answer_fcts[0]->findPoint(BPatch_entry);
 			BPatch_variableExpr *intCounter =
@@ -82,24 +82,25 @@ int main (int argc, const char* argv[]) {
 			proc->stopExecution();
 			intCounter->readValue(&a);
 			proc->continueExecution();
-			std::cout<<"getAnswer call counter: "<<a<<std::endl;
+			cout<<"getAnswer call counter: "<<a<<endl;
 			proc->deleteSnippet(snippetHandle);
 			break;
 		}
 		case 3:
 		{
 			//retreive parameter type
-			std::vector<BPatch_function *> print_fcts;
+			vector<BPatch_function *> print_fcts;
 			image->findFunction("print", print_fcts);
 
 			points = print_fcts[0]->findPoint(BPatch_entry);
-			std::vector<BPatch_snippet *> writeArgs;
+			vector<BPatch_snippet *> writeArgs;
 
-			std::vector<BPatch_localVar *> *params = print_fcts[0]->getParams();
-			std::vector<BPatch_variableExpr *> expr;
-			std::vector<BPatchSnippetHandle *> snippetHandle;
+			vector<BPatch_localVar *> *params = print_fcts[0]->getParams();
+			vector<BPatch_variableExpr *> expr;
+			vector<BPatchSnippetHandle *> snippetHandle;
+
 			for(unsigned int i = 0; i < params->size(); ++i )
-			{	
+			{
 				BPatch_variableExpr *paramValue =
 						proc->malloc(*((*params)[i]->getType()));
 
@@ -112,7 +113,7 @@ int main (int argc, const char* argv[]) {
 
 				snippetHandle.push_back(proc->insertSnippet(saveParam, points[0]));
 			}
-	
+
 			proc->continueExecution();
 			sleep(2);
 			proc->stopExecution();
@@ -125,21 +126,21 @@ int main (int argc, const char* argv[]) {
 					{
 						unsigned int a = 0;
 						expr[i]->readValue(&a);
-						std::cout<<"Scalar parameter "<<i<<" at "<<a<<std::endl;
-						std::cout<<(*params)[i]->getType()->getName()<<std::endl;
+						cout<<"Scalar parameter "<<i<<" at "<<a<<endl;
+						cout<<(*params)[i]->getType()->getName()<<endl;
 						break;
 					}
 					case BPatch_dataPointer:
 					{
 						int *a = 0;
 						expr[i]->readValue(&a);
-						std::cout<<"Pointer parameter "<<i<<" at "<<a<<std::endl;
-						std::cout<<(*params)[i]->getType()->getConstituentType()->getName()<<std::endl;
+						cout<<"Pointer parameter "<<i<<" at "<<a<<endl;
+						cout<<(*params)[i]->getType()->getConstituentType()->getName()<<endl;
 						break;
 					}
 					default:
 					{
-						std::cout<<"Dataclass unsupported"<<std::endl;
+						cout<<"Dataclass unsupported"<<endl;
 						break;
 					}
 				}
@@ -156,22 +157,22 @@ int main (int argc, const char* argv[]) {
 		{
 		    proc->loadLibrary(DYNSO_PATH);
 
-			std::vector<BPatch_function *> awesome_fcts, tp_fcts;
+			vector<BPatch_function *> awesome_fcts, tp_fcts;
 		    image->findFunction("print", awesome_fcts);
 		    if(awesome_fcts.size() <= 0)
 		    {
-				std::cerr<<"Function to instrument not found"<<std::endl;
+				cerr<<"Function to instrument not found"<<endl;
 		    }
 		    image->findFunction("tpvarargs", tp_fcts);
 
 		    if(tp_fcts.size() <= 0)
 		    {
-		    	std::cerr<<"Function to call not found"<<std::endl;
+		    	cerr<<"Function to call not found"<<endl;
 		    }
 
-		    std::vector<BPatch_snippet*> args;
+		    vector<BPatch_snippet*> args;
 		    //Push all the argument in the vector
-		    std::vector<BPatch_localVar *> *params = awesome_fcts[0]->getParams();
+		    vector<BPatch_localVar *> *params = awesome_fcts[0]->getParams();
 		    //Push number of argument
 		    args.push_back(new BPatch_constExpr(params->size()));
 			for(unsigned int i = 0; i < params->size(); ++i )
@@ -181,7 +182,7 @@ int main (int argc, const char* argv[]) {
 				{
 					case BPatch_dataScalar:
 					{
-						std::string typeName = (*params)[i]->getType()->getName();
+						string typeName = (*params)[i]->getType()->getName();
 						if(typeName == "char")
 						{
 							args.push_back(new BPatch_constExpr(CHAR));
@@ -198,7 +199,7 @@ int main (int argc, const char* argv[]) {
 					}
 					case BPatch_dataPointer:
 					{
-						std::string typeName = (*params)[i]->getType()->getConstituentType()->getName();
+						string typeName = (*params)[i]->getType()->getConstituentType()->getName();
 						if(typeName == "char")
 						{
 							args.push_back(new BPatch_constExpr(CHAR_PTR));
@@ -215,7 +216,7 @@ int main (int argc, const char* argv[]) {
 					}
 					default:
 					{
-						std::cout<<"Dataclass unsupported"<<std::endl;
+						cout<<"Dataclass unsupported"<<endl;
 						args.push_back(new BPatch_constExpr(UNKNOWED_TYPE));
 						break;
 					}
@@ -234,6 +235,77 @@ int main (int argc, const char* argv[]) {
 			sleep(2);
 
 			proc->deleteSnippet(snippetHandle);
+			break;
+		}
+		case 5:
+		{
+		    proc->loadLibrary(DYNSO_PATH);
+
+			vector<BPatch_function *> awesome_fcts, tp_fcts;
+		    image->findFunction("sherbrook", awesome_fcts);
+		    if(awesome_fcts.size() <= 0)
+		    {
+				cerr<<"Function to instrument not found"<<endl;
+		    }
+
+		    vector<BPatch_snippet*> args;
+		    //get the arguments in the vector
+		    vector<BPatch_localVar *> *params = awesome_fcts[0]->getParams();
+
+			for(unsigned int i = 0; i < params->size(); ++i )
+			{
+				//Push the type of the next argument
+				switch((*params)[i]->getType()->getDataClass())
+				{
+					case BPatch_dataScalar:
+					{
+						string typeName = (*params)[i]->getType()->getName();
+						cout<<"Sca: "<<typeName<<endl;
+						if(typeName == "int")
+						{
+							image->findFunction("tp_print_param_int",tp_fcts);
+							args.push_back(new BPatch_constExpr((*params)[i]->getName()));
+						}
+						else if(typeName == "char")
+						{
+							image->findFunction("tp_print_param_char",tp_fcts);
+							args.push_back(new BPatch_constExpr((*params)[i]->getName()));
+						}
+						break;
+					}
+					case BPatch_dataPointer:
+					{
+						string typeName = (*params)[i]->getType()->getConstituentType()->getName();
+						cout<<"ptr: "<<typeName<<endl;
+						if(typeName == "char")
+						{
+							image->findFunction("tp_print_param_char_ptr",tp_fcts);
+							args.push_back(new BPatch_constExpr((*params)[i]->getName()));
+						}
+						else if(typeName == "void")
+						{
+							image->findFunction("tp_print_param_void_ptr",tp_fcts);
+							args.push_back(new BPatch_constExpr((*params)[i]->getName()));
+						}
+						break;
+					}
+					default:
+					{
+						cerr<<"unknown type"<<endl;
+						exit(-1);
+						break;
+					}
+				}
+				args.push_back(new BPatch_paramExpr(i));
+		    	BPatch_funcCallExpr call_tp(*tp_fcts[i], args);
+				points = awesome_fcts[0]->findPoint(BPatch_entry);
+				BPatchSnippetHandle* snippetHandle =
+							proc->insertSnippet(call_tp, points[0] );
+				args.clear();
+			}
+
+			proc->continueExecution();
+			sleep(1);
 			break;
 		}
 		default:
