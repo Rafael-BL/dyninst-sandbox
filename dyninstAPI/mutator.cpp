@@ -20,8 +20,9 @@ int main (int argc, const char* argv[]) {
 	{
 		char *args[2] = {NULL};
 		args[0] = "../suspect";
-
 		execvp("../suspect", args);
+	//	args[0] = "/usr/lib/firefox/firefox";
+	//	execvp("/usr/lib/firefox/firefox", args);
 	}
 
 	sleep(2);
@@ -251,6 +252,10 @@ int main (int argc, const char* argv[]) {
 		    vector<BPatch_snippet*> args;
 		    //get the arguments in the vector
 		    vector<BPatch_localVar *> *params = awesome_fcts[0]->getParams();
+		    if(params->size() <= 0)
+		    {
+		    	cerr<<"No Params found"<<endl;
+		    }
 
 			for(unsigned int i = 0; i < params->size(); ++i )
 			{
@@ -296,12 +301,14 @@ int main (int argc, const char* argv[]) {
 						break;
 					}
 				}
+
 				args.push_back(new BPatch_paramExpr(i));
-		    	BPatch_funcCallExpr call_tp(*tp_fcts[i], args);
+		    		BPatch_funcCallExpr call_tp(*tp_fcts[0], args);
 				points = awesome_fcts[0]->findPoint(BPatch_entry);
 				BPatchSnippetHandle* snippetHandle =
 							proc->insertSnippet(call_tp, points[0] );
 				args.clear();
+				tp_fcts.clear();
 			}
 
 			proc->continueExecution();

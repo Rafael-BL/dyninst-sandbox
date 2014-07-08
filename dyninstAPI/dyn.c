@@ -69,20 +69,20 @@ void tpvarargs(int arg1, ...)
 
 void tp_print_param_int(char *name ,int value)
 {
-	printf("int %s = %d;\n", name, value);
+	printf("\tint %s = %d;\n", name, value);
 }
 
 void tp_print_param_char(char *name ,char value)
 {
-	printf("char %s = \'%c\';\n", name, value);
+	printf("\tchar %s = \'%c\';\n", name, value);
 }
 
 void tp_print_param_char_ptr(char *name ,char *value)
 {
-	printf("char *%s = \"%s\";\n", name, value);
+	printf("\tchar *%s = \"%s\";\n", name, value);
 }
 
 void tp_print_param_void_ptr(char *name ,void *value)
 {
-	printf("void *%s = %p;\n", name, value);
+	printf("\tvoid *%s = %p;\n", name, value);
 }
