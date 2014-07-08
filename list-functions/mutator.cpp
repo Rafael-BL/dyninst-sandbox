@@ -13,38 +13,37 @@ int main()
 	char buff[256];
 	for(auto i: *mods)
 	{
-	    	i->getName(buff,256);
+		i->getName(buff,256);
 		if(strcmp(buff,"DEFAULT_MODULE") == 0)
 		{
-		    fcts = i->findFunction("b*", *fcts);
-		    for(auto j: *fcts)
-		    {
-			    	vector<BPatch_localVar *> *params = j->getParams();
-			   	cout<<""<<j->getName()<<"(";
+			fcts = i->findFunction("b*", *fcts);
+			for(auto j: *fcts)
+			{
+				vector<BPatch_localVar *> *params = j->getParams();
+				cout<<""<<j->getName()<<"(";
 				for(unsigned int i = 0; i < params->size(); ++i )
 				{
 
-				//Push the type of the next argument
-				switch((*params)[i]->getType()->getDataClass())
-				{
+					//Push the type of the next argument
+					switch((*params)[i]->getType()->getDataClass())
+					{
 					case BPatch_dataScalar:
-						cout<<(*params)[i]->getType()->getName()<<" "<<(*params)[0]->getName();
-						break;
+					    cout<<(*params)[i]->getType()->getName()<<" "<<(*params)[0]->getName();
+					    break;
 					case BPatch_dataPointer:
-						cout<<(*params)[i]->getType()->getConstituentType()->getName()<<" *"<<(*params)[0]->getName();
-						break;
+					    cout<<(*params)[i]->getType()->getConstituentType()->getName()<<" *"<<(*params)[0]->getName();
+					    break;
 					default:
-						cerr<<"unknown type"<<endl;
-						exit(-1);
-						break;
-				}
+					    cerr<<"unknown type"<<endl;
+					    exit(-1);
+					    break;
+					}
 					if(i < params->size()-1)
-					    cout<<", ";
+						cout<<", ";
 				}
 				cout<<")"<<endl;
-		    }
+			}
 		}
 	}
-
 	return 0;
 }
