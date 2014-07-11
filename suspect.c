@@ -44,6 +44,7 @@ int main(int argc, char **argv)
 {
 	int i, var1 = 18, var2 = 19;
 	volatile int a = 53;
+	sleep(2);
 	for(i = 0; i < 5; ++i)
 	{
 		if(argc < 2)
