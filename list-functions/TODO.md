@@ -45,3 +45,4 @@ objdump --dwarf=info suspect
     00000013 00000000004006a6 00000000004006ac (DW_OP_reg1 (rdx))
     00000026 00000000004006ac 00000000004006ad (DW_OP_GNU_entry_value: (DW_OP_reg5 (rdi)); DW_OP_stack_value)
 ```
+http://eli.thegreenplace.net/2011/02/07/how-debuggers-work-part-3-debugging-information/
