@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 void print(int a, short b,char c, char *d, int *e)
 {
@@ -18,7 +19,8 @@ void awesome(char *a, char *b)
 	return;
 }
 
-void quebec(int a)
+void __attribute__((noinline))
+ quebec(int a)
 {
     	printf("%d",a);
 	return;
@@ -28,7 +30,8 @@ void beauce(int a, char *b)
     	printf(".");
 	return;
 }
-void montreal(int a, char *b, char c)
+void __attribute__((noinline))
+ montreal(int a, char *b, char c)
 {
     	printf(".");
 	return;
@@ -36,7 +39,7 @@ void montreal(int a, char *b, char c)
 void __attribute__((noinline))
 sherbrook(int a, char *b, char c, void *d)
 {
-    	printf("%d .", a);
+    	printf("%d .%s, %c, %p\n", a,b,c,d);
 	return;
 }
 
@@ -49,7 +52,7 @@ int main(int argc, char **argv)
 	{
 		if(argc < 2)
 		{
-			print(1337, 86,'c', "Hello World",&var1 );
+			print(a, 86,'c', "Hello World",&var1 );
 			sleep(1);
 			quebec(a);
 			getAnswer(18, 'a');
@@ -61,7 +64,9 @@ int main(int argc, char **argv)
 		}
 		else
 		{
-			sherbrook(a,"Life is like a box of chocolates", 'a', &var2);
+			int b = atoi(argv[1]);
+			quebec(b);
+			sherbrook(b,"Life is like a box of chocolates", 'a', (&var2)+b);
 			sleep(1);
 		}
 

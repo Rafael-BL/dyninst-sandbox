@@ -1,4 +1,4 @@
-CFLAGS=-g -Wall -O0
+CFLAGS= -g -Wall -O2
 all: suspect
 	cd symtabAPI && make && cd ..
 	cd dyninstAPI && make && cd ..
