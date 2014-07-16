@@ -1,5 +1,7 @@
-When we compile with -O2 optiomization th
-<pre> <code>
+When we compile with gcc -O2 optiomization the DW_AT_location element is a location list that contains this localation DW_OP_GNU_entry_value.
+
+objdump --dwarf=info suspect
+```
  <1><2dc>: Abbrev Number: 20 (DW_TAG_subprogram)
     <2dd>   DW_AT_external    : 1	
     <2dd>   DW_AT_name        : (indirect string, offset: 0x185): sherbrook	
@@ -35,4 +37,11 @@ When we compile with -O2 optiomization th
     <324>   DW_AT_decl_line   : 6	
     <325>   DW_AT_type        : <0x89>	
     <329>   DW_AT_location    : 0xe4	(location list)
-</pre> </code>
+```
+
+objdump --dwarf=info suspect
+```
+    00000000 0000000000400690 00000000004006a6 (DW_OP_reg5 (rdi))
+    00000013 00000000004006a6 00000000004006ac (DW_OP_reg1 (rdx))
+    00000026 00000000004006ac 00000000004006ad (DW_OP_GNU_entry_value: (DW_OP_reg5 (rdi)); DW_OP_stack_value)
+```
