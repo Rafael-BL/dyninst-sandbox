@@ -39,7 +39,7 @@ objdump --dwarf=info suspect
     <329>   DW_AT_location    : 0xe4	(location list)
 ```
 
-objdump --dwarf=info suspect
+objdump --dwarf=loc suspect
 ```
     00000000 0000000000400690 00000000004006a6 (DW_OP_reg5 (rdi))
     00000013 00000000004006a6 00000000004006ac (DW_OP_reg1 (rdx))
