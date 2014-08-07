@@ -1,4 +1,4 @@
-CFLAGS= -g -Wall -O2
+CFLAGS= -g -Wall -O0
 all: suspect
 	cd symtabAPI && make && cd ..
 	cd dyninstAPI && make && cd ..
@@ -24,3 +24,13 @@ clean:
 	cd onetimecode && make clean && cd ..
 	cd list-functions && make clean && cd ..
 	cd list-params && make clean && cd ..
+run: suspect
+	lttng create
+	lttng enable-event -a -u -x ust_baddr_statedump:soinfo,lttng_ust_tracef:event
+	lttng enable-event "tp:quebec" --function ./suspect@quebec -u
+#	lttng enable-event "dyn:sherbrook" --function ./suspect@sherbrook -u
+	lttng start
+	env LTTNG_UST_DEBUG=1 LTTNG_UST_REGISTER_TIMEOUT=-1 LD_PRELOAD=/usr/local/lib/liblttng-ust.so ./suspect
+	lttng stop
+	lttng view
+
