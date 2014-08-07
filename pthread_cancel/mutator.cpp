@@ -13,22 +13,19 @@ void closeFile(BPatch_process *proc, BPatch_thread *thread) {
 	BUCHE( "Exit callback called for process...");
 }
 
-BPatch * bpatch;
-BPatch_process * proc;
 void * statusChangePollerThread(void * arg)
 {
 	BUCHE("Mutator: Entering poller thread");
-	while (!proc->isTerminated())
+
+	BPatch *bpatch = (BPatch *) arg;
+	while(bpatch->waitForStatusChange())
 	{
-		//cout<<".";
-		bpatch->pollForStatusChange();
 	}
 	BUCHE("Mutator: Exiting poller thread");
 }
 
 int main (int argc, const char* argv[]) {
-	bpatch = new BPatch();
-
+	BPatch bpatch ;
 	int mutateePid = fork();
 
 	if(mutateePid == 0)
@@ -40,14 +37,14 @@ int main (int argc, const char* argv[]) {
 
 	sleep(2);
 	BUCHE("Mutator: Attaching to processs");
-	proc = bpatch->processAttach(NULL, mutateePid);
+	BPatch_process*	proc = bpatch.processAttach(NULL, mutateePid);
 	proc->stopExecution();
 	BUCHE("Mutator: Continuing");
 	proc->continueExecution();
 
 	pthread_t thr;
 
-	int ret = pthread_create(&thr, NULL, &statusChangePollerThread, NULL);
+	int ret = pthread_create(&thr, NULL, &statusChangePollerThread, &bpatch);
 
 	sleep(10);	
 	BUCHE("Mutator: Detaching")
