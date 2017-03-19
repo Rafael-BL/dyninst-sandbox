@@ -1,13 +1,13 @@
 CFLAGS= -g -Wall -O0
 all: suspect
-	cd symtabAPI && make && cd ..
-	cd dyninstAPI && make && cd ..
-	cd big-app && make && cd ..
-	cd allocate-str && make && cd ..
-	cd max-malloc && make && cd ..
-	cd onetimecode && make && cd ..
+#	cd symtabAPI && make && cd ..
+#	cd dyninstAPI && make && cd ..
+#	cd big-app && make && cd ..
+#	cd allocate-str && make && cd ..
+#	cd max-malloc && make && cd ..
+#	cd onetimecode && make && cd ..
 	cd list-functions && make && cd ..
-	cd list-params && make && cd ..
+#	cd list-params && make && cd ..
 debug-file: suspect
 	objcopy --only-keep-debug $^ $@
 	strip --strip-debug --strip-unneeded $^

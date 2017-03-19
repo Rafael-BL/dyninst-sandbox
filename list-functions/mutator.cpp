@@ -1,12 +1,12 @@
 #include <BPatch.h>
 #include <BPatch_function.h>
-#define BIN_PATH  "/home/frdeso/projets/dyninst-sandbox/suspect"
+#define BIN_PATH  "/home/rafael/dyninst-sandbox/suspect"
 int main(int argc, char **argv)
 {
 
 	if(argc <= 1)
 	{
-		cout<<"No binary to examine. Exiting..."<<endl;
+		std::cout<<"No binary to examine. Exiting..."<<std::endl;
 		exit(-1);
 	}
 	char *path = argv[1];
@@ -15,15 +15,15 @@ int main(int argc, char **argv)
 
 	BPatch_binaryEdit *proc = bpatch.openBinary(path);
 	BPatch_image *image = proc->getImage();
-	vector<BPatch_function*> *fcts = image->getProcedures(false);
+	std::vector<BPatch_function*> *fcts = image->getProcedures(false);
 	fcts->clear();
 	std::vector<BPatch_module *> *mods = image->getModules();
 	char buff[256];
 	if(mods->size() == 0){
-	    cerr<<"No module found"<<endl;
+	    std::cerr<<"No module found"<<std::endl;
 	    exit(0);
 	}
-	cout<<"mods "<<mods->size()<<endl;
+	std::cout<<"mods "<<mods->size()<<std::endl;
 
 	for(auto i: *mods)
 	{
@@ -33,36 +33,36 @@ int main(int argc, char **argv)
 			//cout<<"*"<<buff<<endl;
 			fcts = i->getProcedures();
 	    	    	if(fcts->size() == 0){
-	    	    		cerr<<buff<<": No function found"<<endl;
+	    	    		std::cerr<<buff<<": No function found"<<std::endl;
 	    	    		continue;
 	    	    	}
-			cout<<"fcts "<<fcts->size()<<endl;
+			std::cout<<"fcts "<<fcts->size()<<std::endl;
 			for(auto j: *fcts)
 			{
-				vector<BPatch_localVar *> *params = j->getParams();
-				cout<<"("<<buff<<") "<<j->getName()<<"(";
+				std::vector<BPatch_localVar *> *params = j->getParams();
+				std::cout<<"("<<buff<<") "<<j->getName()<<"(";
 				for(unsigned int i = 0; i < params->size(); ++i )
 				{
 					//Push the type of the next argument
 					switch((*params)[i]->getType()->getDataClass())
 					{
 					case BPatch_dataScalar:
-					    cout<<(*params)[i]->getType()->getName()<<" "<<(*params)[i]->getName();
+					    std::cout<<(*params)[i]->getType()->getName()<<" "<<(*params)[i]->getName();
 					    break;
 					case BPatch_dataPointer:
-					    cout<<(*params)[i]->getType()->getConstituentType()->getName()<<" *"<<(*params)[i]->getName();
+					    std::cout<<(*params)[i]->getType()->getConstituentType()->getName()<<" *"<<(*params)[i]->getName();
 					    break;
 					case BPatch_dataStructure:
-					    cout<<"struct "<< (*params)[i]->getName();
+					    std::cout<<"struct "<< (*params)[i]->getName();
 					    break;
 					default:
-					    cout<<(*params)[i]->getType()->getName()<<" " <<(*params)[i]->getName();
+					    std::cout<<(*params)[i]->getType()->getName()<<" " <<(*params)[i]->getName();
 					    break;
 					}
 					if(i < params->size()-1)
-						cout<<", ";
+						std::cout<<", ";
 				}
-				cout<<")"<<endl;
+				std::cout<<")"<<std::endl;
 			}
 			fcts->clear();
 		}
